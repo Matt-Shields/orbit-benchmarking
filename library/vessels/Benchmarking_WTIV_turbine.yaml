@@ -3,6 +3,7 @@ crane_specs:
   max_hook_height: 100
 #  max_lift: 900
   max_windspeed: 15
+  max_waveheight: 2
 #  radius: 30
 jacksys_specs:
   air_gap: 10
@@ -24,7 +25,9 @@ transport_specs:
   transit_speed: 15
 vessel_specs:
 #  beam_length: 50
-  day_rate: 215000
+  day_rate: 217000
+  mobilization_days: 5
+  mobilization_mult: 1
 #  max_draft: 5.8
 #  min_draft: 5
 #  overall_length: 150
