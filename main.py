@@ -30,7 +30,7 @@ def instantiate_orbit(config_start_date, config_year):
     ORBIT_project.run_project()
     return ORBIT_project
 
-def generate_results(config_start_date, config_year, costs, times):
+def generate_results(config_start_date, config_year, costs, times, weather_delays):
     orbit_proj = instantiate_orbit(config_start_date, config_year)
     _orbit_costs = pd.Series(orbit_proj.phase_costs, name=config_year)
     _orbit_times = pd.Series(orbit_proj.phase_times, name=config_year)
@@ -38,25 +38,53 @@ def generate_results(config_start_date, config_year, costs, times):
     costs = pd.concat([costs, _orbit_costs], axis=1, sort="False")
     times = pd.concat([times, _orbit_times], axis=1, sort="False")
 
-    # costs['rel_err'] = costs.apply(lambda row: (row.iloc[1] - row.iloc[0]) / row.iloc[0] * 100, axis=1)
-    return costs, times
+    # Delays
+    _weather_delays = pd.Series()
+    for i in config['install_phases']:
+        if 'Turbine' in i or 'Monopile' in i:
+            _delay = times.loc[i].values[0] * (1 - orbit_proj._phases[i].\
+                                     detailed_output[i]['WTIV_operational_efficiency'])
+        elif 'Array' in i:
+            _delay = times.loc[i].values[0] * (1 - orbit_proj._phases[i]. \
+                                               detailed_output[i]['Array_Cable_Installation_Vessel_operational_efficiency'])
+        elif 'Export' in i:
+            _delay = times.loc[i].values[0] * (1 - orbit_proj._phases[i]. \
+                                               detailed_output[i]['Export_Cable_Installation_Vessel_operational_efficiency'])
+        elif 'Substation' in i:
+            _delay = times.loc[i].values[0] * (1 - orbit_proj._phases[i]. \
+                                               detailed_output[i]['Heavy_Lift_Vessel_operational_efficiency'])
+        elif 'Scour' in i:
+            _delay = times.loc[i].values[0] * (1 - orbit_proj._phases[i]. \
+                                               detailed_output[i]['SPI_Vessel_operational_efficiency'])
+        else:
+           print('Weather delay not found for ', i)
 
-def compute_stats(costs, times):
+        _weather_delays = _weather_delays.append(pd.Series(_delay, index=[i], name=config_year))
+    weather_delays = pd.concat([weather_delays, _weather_delays], axis=1, sort='False')
+
+    return costs, times, weather_delays
+
+def compute_stats(costs, times, weather_delays):
     """Statistical results"""
     average_costs = np.round(costs.mean(axis=1) * 1e-6 * usd_to_euro, 1)
     average_times = np.round(times.mean(axis=1) * (1/24), 1)
-
-    return average_costs, average_times
+    average_delays = np.round(weather_delays.mean(axis=1) * (1 / 24), 1)
+    return average_costs, average_times, average_delays
 
 if __name__ == "__main__":
     config_start_date = '07/01'
-    start_year = 2000
-    end_year = 2002
-    config_year = [str(y) for y in range(start_year, end_year)]
+    start_year = 1979
+    end_year = 2018
+    config_year = [str(y) for y in range(start_year, end_year+1)]
     costs = pd.DataFrame()
     times = pd.DataFrame()
+    weather_delays = pd.DataFrame()
     for c in config_year:
-        costs, times = generate_results(config_start_date, c, costs, times)
-
-    avg_cost, avg_time = compute_stats(costs, times)
-    print(avg_cost, avg_time)
+        costs, times, weather_delays = generate_results(config_start_date, c, costs, times, weather_delays)
+    avg_cost, avg_time, avg_delays = compute_stats(costs, times, weather_delays)
+    print("\nAverage phase cost (M Euro):\n----------")
+    print(avg_cost)
+    print("\nAverage phase duration (days):\n----------")
+    print(avg_time)
+    print("\nAverage phase weather delays (days):\n----------")
+    print(avg_delays)
