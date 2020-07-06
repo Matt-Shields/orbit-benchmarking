@@ -2,6 +2,7 @@ usd_to_euro = 0.92
 
 phases = [
     # Substructures
+    'MonopileDesign',
     'MonopileInstallation',
     #     'ScourProtectionDesign',
     #     'ScourProtectionInstallation',
@@ -19,16 +20,6 @@ phases = [
 ]
 
 config = {
-    # Substations
-    #     "num_substations": 1,
-
-    # Vessels
-    #     'scour_protection_install_vessel': 'ExampleScour',
-    #     'trench_dig_vessel': 'StematSpirit',
-    #     'array_cable_lay_vessel': 'cable_lay_vessel',
-    #     'export_cable_lay_vessel': 'StematSpirit',
-    #     "oss_install_vessel": "OlegStrashnov",  # Actually vessel from SPT Offshore
-
     # Site/plant
     'site': {
         'depth': 22.5,
@@ -40,10 +31,10 @@ config = {
     },
 
     'plant': {
-        'layout': 'grid',
+        'layout': 'ring',
         'num_turbines': 50,
-        'row_spacing': 7,
-        'turbine_spacing': 9,
+        'row_spacing': 9,
+        'turbine_spacing': 7,
         'substation_distance': 1
     },
 
@@ -57,21 +48,29 @@ config = {
     'turbine': '8MW_generic',
 
     # Substructure components
-    'substructure': {'diameter': 7.2},
-    'monopile': {
-        'type': 'Monopile',
-        'length': 69,
-        'diameter': 7.2,
-        'deck_space': 496.8,
-        'mass': 800,
-        'monopile_steel_cost': 2000 / usd_to_euro,
-    },
+    # 'substructure': {'diameter': 7.2},
+    # 'monopile': {
+    #     'type': 'Monopile',
+    #     'length': 69,
+    #     'diameter': 7.2,
+    #     'deck_space': 496.8,
+    #     'mass': 800,
+    #     'monopile_steel_cost': 2000 / usd_to_euro,
+    # },
 
-    'transition_piece': {
-        'type': 'Transition Piece',
-        'deck_space': 100,
-        'mass': 400,
-        'transition_piece_steel_cost': 2000 / usd_to_euro,
+    # 'transition_piece': {
+    #     'type': 'Transition Piece',
+    #     'deck_space': 100,
+    #     'mass': 400,
+    #     'transition_piece_steel_cost': 2000 / usd_to_euro,
+    # },
+
+    # Use Monopile Design module
+    'monopile_design': {
+        'monopile_steel_cost': 2000 / usd_to_euro,
+        'tp_steel_cost': 2000 / usd_to_euro,
+        'transition_piece_length': 15,
+        'load_factor': 3.75
     },
 
     'scour_protection_design': {
@@ -98,7 +97,13 @@ config = {
     },
 
     'substation_design': {
-        'num_substations': 2
+        'num_substations': 2,
+        # Updated to increase substation costs to reflect ORCA, BNEF values
+        'oss_pile_cost_rate': 2250,
+        'oss_substructure_cost_rate': 6250,
+        'mpt_cost_rate': 25000,  # 125000 gives us ~41m/MW, per BNEF
+        'topside_fab_cost_rate': 29000,
+        'shunt_cost_rate': 70000
     },
 
     #     "offshore_substation_topside": {
@@ -120,7 +125,18 @@ config = {
     },
 
     'TurbineInstallation': {
-        'wtiv': 'Benchmarking_WTIV_turbine'
+        'wtiv': 'Benchmarking_WTIV_turbine',
+        'kwargs': {"tower_section_fasten_time": 2.0,  # hr, applies to all sections
+                   "tower_section_release_time": 0.0,  # hr, applies to all sections
+                   "tower_section_attach_time": 0.5,  # hr, applies to all sections
+                   "nacelle_fasten_time": 2.5,  # hr
+                   "nacelle_release_time": 0.0,  # hr
+                   "nacelle_attach_time": 1.0,  # hr
+                   "blade_fasten_time": 1.0,  # hr
+                   "blade_release_time": 0.0,  # hr
+                   "blade_attach_time": 2.0,  # hr
+                   "site_position_time": 4.6 # hr
+                   },
     },
 
     'ArrayCableInstallation': {
@@ -143,11 +159,11 @@ config = {
 
     # Phases
     'design_phases': [
-        #         "MonopileDesign",
-        'ScourProtectionDesign',
-        'ArraySystemDesign',
-        'ExportSystemDesign',
-        'OffshoreSubstationDesign'
+                "MonopileDesign",
+                'ScourProtectionDesign',
+                'ArraySystemDesign',
+                'ExportSystemDesign',
+                'OffshoreSubstationDesign'
     ],
 
     'install_phases': {

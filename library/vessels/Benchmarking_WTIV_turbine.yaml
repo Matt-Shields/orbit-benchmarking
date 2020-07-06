@@ -20,7 +20,7 @@ storage_specs:
   max_deck_load: 15
   max_deck_space: 4000
 transport_specs:
-  max_waveheight: 3
+  max_waveheight: 2
   max_windspeed: 25
   transit_speed: 15
 vessel_specs:

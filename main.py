@@ -38,6 +38,10 @@ def generate_results(config_start_date, config_year, costs, times, weather_delay
     """Run ORBIT project and compile results"""
     orbit_proj = instantiate_orbit(config_start_date, config_year)
 
+    # Print some design results
+    # print(orbit_proj._phases['MonopileDesign'].design_result)
+    # print(orbit_proj._phases['MonopileInstallation'].wtiv.trip_data)
+    # print(orbit_proj._phases['TurbineInstallation'].wtiv.trip_data)
     # Times and costs
     _orbit_costs = pd.Series(orbit_proj.phase_costs, name=config_year)
     _orbit_times = pd.Series(orbit_proj.phase_times, name=config_year)
@@ -76,6 +80,8 @@ def compute_stats(costs, times, weather_delays):
     """Summary statistics over all years of weather data set"""
     # Costs (in millions of Euros for benchmarking work)
     average_costs = np.round(costs.mean(axis=1) * 1e-6 * usd_to_euro, 1)
+    average_costs['ExportCableInstallation'] -= 16.9  # Subtract off onshore constructin
+    average_costs['OnshoreConstruction'] = 16.9
     # Time (convert to days)
     average_times = np.round(times.mean(axis=1) * (1/24), 1)
     # Delays (convert to days)
@@ -87,7 +93,7 @@ if __name__ == "__main__":
     # Define start date for all phases and beginning/end year for statistical results
     config_start_date = '07/01'
     start_year = 1979
-    end_year = 2018
+    end_year =  1981
     config_year = [str(y) for y in range(start_year, end_year+1)]
     # Initialize output structures and loop through each year of time series
     costs = pd.DataFrame()
