@@ -40,7 +40,7 @@ config = {
     },
 
     'plant': {
-        'layout': 'grid',
+        'layout': 'ring',
         'num_turbines': 50,
         'row_spacing': 7,
         'turbine_spacing': 9,
@@ -120,7 +120,18 @@ config = {
     },
 
     'TurbineInstallation': {
-        'wtiv': 'Benchmarking_WTIV_turbine'
+        'wtiv': 'Benchmarking_WTIV_15MW_turbine',
+        'kwargs': {"tower_section_fasten_time": 2.0,  # hr, applies to all sections
+                   "tower_section_release_time": 0.0,  # hr, applies to all sections
+                   "tower_section_attach_time": 0.5,  # hr, applies to all sections
+                   "nacelle_fasten_time": 2.5,  # hr
+                   "nacelle_release_time": 0.0,  # hr
+                   "nacelle_attach_time": 1.0,  # hr
+                   "blade_fasten_time": 1.0,  # hr
+                   "blade_release_time": 0.0,  # hr
+                   "blade_attach_time": 2.0,  # hr
+                   "site_position_time": 4.6 # hr
+                   },
     },
 
     'ArrayCableInstallation': {

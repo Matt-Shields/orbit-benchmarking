@@ -15,7 +15,7 @@ import ORBIT
 from ORBIT import ProjectManager
 print(f"Using ORBIT version {ORBIT.__version__}.")
 
-from orbit_config import phases, config, usd_to_euro
+from orbit_config_20MW import phases, config, usd_to_euro
 
 def instantiate_orbit(config_start_date, config_year):
     """ Instantiate instance of ORBIT project for a given year within the time series"""
@@ -38,9 +38,13 @@ def generate_results(config_start_date, config_year, costs, times, weather_delay
     """Run ORBIT project and compile results"""
     orbit_proj = instantiate_orbit(config_start_date, config_year)
 
+    # Print statements
+    # print(orbit_proj.phases['MonopileDesign'].design_result)
+
     # Times and costs
     _orbit_costs = pd.Series(orbit_proj.phase_costs, name=config_year)
     _orbit_times = pd.Series(orbit_proj.phase_times, name=config_year)
+
     costs = pd.concat([costs, _orbit_costs], axis=1, sort="False")
     times = pd.concat([times, _orbit_times], axis=1, sort="False")
 
@@ -76,6 +80,8 @@ def compute_stats(costs, times, weather_delays):
     """Summary statistics over all years of weather data set"""
     # Costs (in millions of Euros for benchmarking work)
     average_costs = np.round(costs.mean(axis=1) * 1e-6 * usd_to_euro, 1)
+    average_costs['ExportCableInstallation'] -= 25.9
+    average_costs['OnshoreConstruction'] = 25.9
     # Time (convert to days)
     average_times = np.round(times.mean(axis=1) * (1/24), 1)
     # Delays (convert to days)
