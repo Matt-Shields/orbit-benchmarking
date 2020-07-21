@@ -125,7 +125,9 @@ config = {
     },
 
     'TurbineInstallation': {
+
         'wtiv': 'Benchmarking_WTIV_turbine',
+
         'kwargs': {"tower_section_fasten_time": 2.0,  # hr, applies to all sections
                    "tower_section_release_time": 0.0,  # hr, applies to all sections
                    "tower_section_attach_time": 0.5,  # hr, applies to all sections

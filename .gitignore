@@ -108,6 +108,7 @@ ENV/
 library/weather/ERA5_1979_2019.csv
 library/weather/ERA5_Dudgeon.csv
 library/weather/ERA5_Dudgeon.xlsx
+.xlsx
 
 
 # VSCode
