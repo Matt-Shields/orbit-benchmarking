@@ -15,7 +15,7 @@ import ORBIT
 from ORBIT import ProjectManager
 print(f"Using ORBIT version {ORBIT.__version__}.")
 
-from orbit_config_20MW import phases, config, usd_to_euro
+from orbit_config_15MW import phases, config, usd_to_euro
 
 def instantiate_orbit(config_start_date, config_year):
     """ Instantiate instance of ORBIT project for a given year within the time series"""
@@ -84,8 +84,7 @@ def compute_stats(costs, times, weather_delays):
     # Costs (in millions of Euros for benchmarking work)
     average_costs = np.round(costs.mean(axis=1) * 1e-6 * usd_to_euro, 1)
 
-    average_costs['ExportCableInstallation'] -= 25.9  # Subtract off onshore constructin
-    average_costs['OnshoreConstruction'] = 25.9
+    average_costs['OnshoreConstruction'] = 18.836 * usd_to_euro
 
     # Time (convert to days)
     average_times = np.round(times.mean(axis=1) * (1/24), 1)
@@ -98,7 +97,7 @@ if __name__ == "__main__":
     # Define start date for all phases and beginning/end year for statistical results
     config_start_date = '07/01'
     start_year = 1979
-    end_year =  1981
+    end_year =  2017
     config_year = [str(y) for y in range(start_year, end_year+1)]
     # Initialize output structures and loop through each year of time series
     costs = pd.DataFrame()
