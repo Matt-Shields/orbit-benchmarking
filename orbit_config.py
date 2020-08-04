@@ -74,7 +74,7 @@ config = {
     },
 
     'scour_protection_design': {
-        'cost_per_tonne': 40,
+        'cost_per_tonne': 50,
         #         'scour_protection_depth':0.3
     },
 

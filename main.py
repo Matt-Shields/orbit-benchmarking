@@ -15,7 +15,7 @@ import ORBIT
 from ORBIT import ProjectManager
 print(f"Using ORBIT version {ORBIT.__version__}.")
 
-from orbit_config_15MW import phases, config, usd_to_euro
+from orbit_config import phases, config, usd_to_euro
 
 def instantiate_orbit(config_start_date, config_year):
     """ Instantiate instance of ORBIT project for a given year within the time series"""
@@ -41,8 +41,8 @@ def generate_results(config_start_date, config_year, costs, times, weather_delay
 
     # Print some design results
     # print(orbit_proj._phases['MonopileDesign'].design_result)
-    # print(orbit_proj._phases['MonopileInstallation'].wtiv.trip_data)
-    # print(orbit_proj._phases['TurbineInstallation'].wtiv.trip_data)
+    print(orbit_proj._phases['MonopileInstallation'].wtiv.trip_data)
+    print(orbit_proj._phases['TurbineInstallation'].wtiv.trip_data)
 
     # Times and costs
     _orbit_costs = pd.Series(orbit_proj.phase_costs, name=config_year)
